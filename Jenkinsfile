@@ -1,45 +1,29 @@
-
----
-
-### ✅ Jenkinsfile
-
-:::writing{variant="standard" id="fixjf"}
 pipeline {
-    agent any
+agent any
 
-    stages {
-        stage('Clone Code') {
-            steps {
-                git 'https://github.com/MadihaShaikh25/CI-Workflow-Setup-using-Jenkins.git'
-            }
+```
+stages {
+
+    stage('Build Docker Image') {
+        steps {
+            bat 'docker build -t event-registration-app .'
         }
+    }
 
-        stage('Build Docker Image') {
-            steps {
-                bat 'docker build -t flask-event-app .'
-            }
+    stage('Run Docker Container') {
+        steps {
+            bat 'docker stop event-registration-container || exit 0'
+            bat 'docker rm event-registration-container || exit 0'
+            bat 'docker run -d -p 5000:5000 --name event-registration-container event-registration-app'
         }
+    }
 
-        stage('Run Container') {
-            steps {
-                bat 'docker run -d -p 5000:5000 flask-event-app'
-            }
-        }
-
-        stage('Basic Test') {
-            steps {
-                bat 'curl http://localhost:5000'
-            }
+    stage('Basic Test') {
+        steps {
+            bat 'curl http://localhost:5000'
         }
     }
 }
-:::
+```
 
----
-
-# ✅ Then do:
-
-```bash
-git add .
-git commit -m "fix Jenkinsfile"
-git push
+}
