@@ -19,7 +19,7 @@ pipeline {
 
         stage('Basic Test') {
             steps {
-                bat 'curl http://localhost:5000'
+                bat 'curl http://localhost:5000 || exit 1'
             }
         }
     }
